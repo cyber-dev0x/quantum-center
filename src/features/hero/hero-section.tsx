@@ -1,12 +1,43 @@
-import { Panel } from "@/components/ui/panel";
+"use client";
 
-const SIGNALS = [
-  { label: "Active Agents", value: "12" },
-  { label: "Live Simulations", value: "4" },
-  { label: "Experiment Slots", value: "26" },
+import { useEffect, useState } from "react";
+import { Panel } from "@/components/ui/panel";
+import { HologramCore } from "@/components/visuals/hologram-core";
+import { clamp } from "@/lib/math";
+
+type Signal = {
+  label: string;
+  value: number;
+  min: number;
+  max: number;
+  suffix?: string;
+  decimals?: number;
+};
+
+const INITIAL_SIGNALS: Signal[] = [
+  { label: "Active Agents", value: 12, min: 8, max: 26, decimals: 0 },
+  { label: "Live Simulations", value: 4, min: 2, max: 12, decimals: 0 },
+  { label: "Experiment Slots", value: 26, min: 18, max: 40, decimals: 0 },
 ];
 
+const formatSignal = (signal: Signal) => `${signal.value.toFixed(signal.decimals ?? 0)}${signal.suffix ?? ""}`;
+
 export function HeroSection() {
+  const [signals, setSignals] = useState(INITIAL_SIGNALS);
+
+  useEffect(() => {
+    const timerId = window.setInterval(() => {
+      setSignals((previous) =>
+        previous.map((signal) => ({
+          ...signal,
+          value: clamp(signal.value + (Math.random() - 0.5) * (signal.max - signal.min) * 0.09, signal.min, signal.max),
+        })),
+      );
+    }, 2000);
+
+    return () => window.clearInterval(timerId);
+  }, []);
+
   return (
     <section className="relative overflow-hidden border-b border-white/10">
       <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,_rgba(34,211,238,0.2),_transparent_45%),radial-gradient(circle_at_70%_20%,_rgba(139,92,246,0.17),_transparent_42%)]" />
@@ -42,13 +73,17 @@ export function HeroSection() {
             <span className="text-cyan-300">ONLINE</span>
           </div>
           <div className="space-y-3">
-            {SIGNALS.map((signal) => (
+            {signals.map((signal) => (
               <div key={signal.label} className="rounded-xl border border-white/10 bg-zinc-900/70 p-3">
                 <p className="text-xs text-zinc-400">{signal.label}</p>
-                <p className="mt-1 text-2xl font-semibold text-zinc-100">{signal.value}</p>
+                <p className="mt-1 text-2xl font-semibold text-zinc-100">{formatSignal(signal)}</p>
               </div>
             ))}
           </div>
+
+          <HologramCore />
+
+          <p className="mt-3 text-center text-[11px] tracking-[0.12em] text-zinc-500">AUTO-REFRESH: 2 SEC</p>
           <div className="pointer-events-none absolute inset-0 rounded-2xl border border-cyan-300/12" />
         </Panel>
       </div>

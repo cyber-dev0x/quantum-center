@@ -26,3 +26,51 @@ body {
   background: rgba(34, 211, 238, 0.35);
   color: #ecfeff;
 }
+
+@keyframes drift-slow {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(9%, -6%, 0) scale(1.07);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes drift-reverse {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(-8%, 7%, 0) scale(1.1);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes pulse-soft {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: translate(-50%, -50%) scale(0.95);
+  }
+  50% {
+    opacity: 0.85;
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+}
+
+.animate-drift-slow {
+  animation: drift-slow 22s ease-in-out infinite;
+}
+
+.animate-drift-reverse {
+  animation: drift-reverse 30s ease-in-out infinite;
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 4.4s ease-in-out infinite;
+}
